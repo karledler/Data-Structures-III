@@ -1,0 +1,297 @@
+/*TimeDriver.java
+Author: Karl Edler
+9/30/14
+The TimeDriver class is the automated unit test stub to completely validate the Time Incrementer library’s functionality.
+*/
+import java.util.Scanner;//used to scan inputs
+import java.util.InputMismatchException;//used to catch inputmismatch exception
+
+class TimeDriver
+{
+   
+   public static boolean Check2(int num)//a method used throughout this driver that checks the users input
+   {                                   //for a 1 or 2 integer.
+      if(num>2||num<1)
+      return false;
+      else
+      return true;
+   }
+   
+   public static boolean Check6(int num)//a method used throughout this driver that checks the users input
+   {                                   //for an integer 1 through 6.
+      if(num<1||num>6)
+      return false;
+      else
+      return true;
+   }
+   
+
+      public static void main(String [] args)
+         {
+            int n, j, k, m=0, q;
+            boolean a=true, b=true;/*a and b used to break loops when they equal false*/
+            boolean military=false;//military boolean used to decide whether a standard or military string will be printed
+            String unit="", IncDec="";//strings that get set to tell the user what unit of time they want increment/decrement
+            
+            
+            
+            Scanner scan = new Scanner (System.in);
+        try{//start of try/catch statement for the entire driver to catch inputmismatchexceptions
+            
+         do{
+            System.out.println("1. Type the number '1' to set the time to standard.\n2. Type the number '2' to set the time to military.");
+            j = scan.nextInt ();
+            if(Check2(j)==false)
+            System.out.println("Please enter a 1 or 2.");
+           }while(Check2(j)==false);
+            
+
+            if(j == 1)
+            {//this if statement is to set time to standard. first string will print in standard
+            TimeIncrementer test = new TimeIncrementer (0,0,0,false);
+               
+               do{
+                  System.out.println("Type in the hour you wish to set the time to.");
+                  if(test.CheckHour_Standard(scan.nextInt ())==false)
+                  System.out.println("Please enter an hour from 1 to 12.");
+                 }while(test.setHour_Standard(test.getHour ())==false);
+               do{
+                  System.out.println("Type in the minute you wish to set the time to.");
+                  if(test.CheckMin(scan.nextInt ())==false)
+                  System.out.println("Please enter a minute from 0 to 59.");
+                 }while(test.setMinute(test.getMinute ())==false);
+               do{
+                  System.out.println("Type in the second you wish to set the time to.");
+                  if(test.CheckSec(scan.nextInt ())==false)
+                  System.out.println("Please enter a second from 0 to 59.");
+                 }while(test.setSecond(test.getSecond ())==false);
+               do{
+                  System.out.println("1. Type '1' to set the time to A.M.\n2. Type '2' to set the time to P.M.");
+                  k = scan.nextInt ();
+                  if(Check2(k)==false)
+                  System.out.println("Please enter a 1 or 2.");
+                 }while(Check2(k)==false); 
+                 
+                 if(k==1)
+                 test.setAM(true);
+                 else
+                 test.setAM(false);
+                                
+     
+            
+               while(a)
+               {//a
+                  while(b)
+                  {//b
+                     do{
+                           if(!military)
+                           System.out.println(test.StandardString());
+                           else
+                           System.out.println(test.MilitaryString());
+                        System.out.println("1. To change the hour, enter '1'.\n"
+                        + "2. To change the minute, enter '2'.\n3. To change the second, enter '3'.\n"
+                        + "4. To view the time in Military, enter '4'.\n5. To view the time in Standard, enter '5'.\n"
+                        + "6. To end the program, enter '6'.");
+                        m = scan.nextInt ();
+                        if(Check6(m)==false)//check6 method to make sure they enter an integer 1 to 6 so the program continues
+                        System.out.println("Please enter a number 1 through 6.");
+                       }while(Check6(m)==false);
+                  
+                  switch(m){//case 1,2,3 decide what the unit string is, so the user knows what unit of time they are changing                
+                  case 1:
+                     unit="hour";
+                     b=false;
+                     break;
+                  case 2:
+                     unit="minute";
+                     b=false;
+                     break;
+                  case 3:
+                     unit="second";
+                     b=false;
+                     break;
+                  case 4:
+                     military=true;
+                     b=true;//loop is not broken. repeats this time printing in military
+                     break;
+                  case 5:
+                     military=false;
+                     b=true;//loop is not broken. repeats this time printing in standard
+                     break;
+                  case 6:
+                     a=false;//sets loop a to false, which also breaks loop a and b using the next if statements if(!a){break}
+                     break;
+                          }
+                  if(!a)
+                  {break;}//breaks b loop, continues to next if statement to break the a loop
+                  }//end of while loop b
+                  
+               b=true;//loop b was set to false momentarilty in case 1,2,3 so it would not loop around again without the user changing the time yet
+                     //loop b is now set back to true outside of itself so after the user increment/decrements a unit,...
+                    //the time will be printed again and they can continue to change the time again
+               if(!a)
+               {break;}//breaks a loop ending the entire program
+                             
+               do{ 
+                  System.out.println("1. Enter '1' to increment the " + unit + ".\n2. Enter '2' to decrement the " + unit + ".");//unit is set in the switch statement
+                  q = scan.nextInt ();
+                  if(Check2(q)==false)
+                  {System.out.println("Please enter a 1 or 2.");}
+                 }while(Check2(q)==false);
+                                 
+               if(q==1)
+               IncDec="increment";
+               else
+               IncDec="decrement";
+               
+               System.out.println("How many times do you wish to " + IncDec + " the "  + unit + "?");//unit is set in the switch statement
+               n = scan.nextInt ();//n is how many times they want to increment or decrement the unit of time
+               
+                  if(q==1)
+                  {
+                     if(m==1)
+                     for(int i = 0; i < n; i++)
+                     test.IncrementHour();
+                     if(m==2)
+                     for(int i = 0; i < n; i++)
+                     test.IncrementMinute();
+                     if(m==3)
+                     for(int i = 0; i < n; i++)
+                     test.IncrementSecond();
+                  }
+                  if(q==2)
+                  {
+                     if(m==1)
+                     for(int i = 0; i < n; i++)
+                     test.DecrementHour();
+                     if(m==2)
+                     for(int i = 0; i < n; i++)
+                     test.DecrementMinute();
+                     if(m==3)
+                     for(int i = 0; i < n; i++)
+                     test.DecrementSecond();
+                  }
+
+               }//end of while loop a
+            }
+            else
+            {//no am/pm prompt for military
+            military=true;//will print military string first rather than standard first
+            TimeIncrementer test = new TimeIncrementer (0,0,0);
+            
+               do{
+                  System.out.println("Type in the hour you wish to set the time to.");
+                  if(test.CheckHour_Military(scan.nextInt ())==false)
+                  System.out.println("Please enter an hour from 0 to 23.");
+                 }while(test.setHour_Military(test.getHour ())==false);
+               do{
+                  System.out.println("Type in the minute you wish to set the time to.");
+                  if(test.CheckMin(scan.nextInt ())==false)
+                  System.out.println("Please enter a minute from 0 to 59.");
+                 }while(test.setMinute(test.getMinute ())==false);
+               do{
+                  System.out.println("Type in the second you wish to set the time to.");
+                  if(test.CheckSec(scan.nextInt ())==false)
+                  System.out.println("Please enter a second from 0 to 59.");
+                 }while(test.setSecond(test.getSecond ())==false);     
+     
+            
+               while(a)
+               {//a
+                  while(b)
+                  {//b
+                     do{
+                           if(!military)
+                           System.out.println(test.StandardString());
+                           else
+                           System.out.println(test.MilitaryString());
+                        System.out.println("1. To change the hour, enter '1'.\n"
+                        + "2. To change the minute, enter '2'.\n3. To change the second, enter '3'.\n"
+                        + "4. To view the time in Military, enter '4'.\n5. To view the time in Standard, enter '5'.\n"
+                        + "6. To end the program, enter '6'.");
+                        m = scan.nextInt ();
+                        if(Check6(m)==false)//check6 method to make sure they enter an integer 1 to 6 so the program continues
+                        System.out.println("Please enter a number 1 through 6.");
+                       }while(Check6(m)==false);
+                  
+                  switch(m){//case 1,2,3 decide what the unit string is, so the user knows what unit of time they are changing                
+                  case 1:
+                     unit="hour";
+                     b=false;
+                     break;
+                  case 2:
+                     unit="minute";
+                     b=false;
+                     break;
+                  case 3:
+                     unit="second";
+                     b=false;
+                     break;
+                  case 4:
+                     military=true;
+                     b=true;//loop is not broken. repeats this time printing in military
+                     break;
+                  case 5:
+                     military=false;
+                     b=true;//loop is not broken. repeats this time printing in standard
+                     break;
+                  case 6:
+                     a=false;//sets loop a to false, which also breaks loop a and b using the next if statements if(!a){break}
+                     break;
+                          }
+                  if(!a)
+                  {break;}//breaks b loop, continues to next if statement to break the a loop
+                  }//end of while loop b
+                  
+               b=true;//loop b was set to false momentarilty in case 1,2,3 so it would not loop around again without the user changing the time yet
+                     //loop b is now set back to true outside of itself so after the user increment/decrements a unit,...
+                    //the time will be printed again and they can continue to change the time again
+               if(!a)
+               {break;}//breaks a loop ending the entire program 
+                                           
+               do{ 
+                  System.out.println("1. Enter '1' to increment the " + unit + ".\n2. Enter '2' to decrement the " + unit + ".");//unit is set in the switch statement
+                  q = scan.nextInt ();
+                  if(Check2(q)==false)
+                  {System.out.println("Please enter a 1 or 2.");}
+                 }while(Check2(q)==false);
+                                 
+               if(q==1)
+               IncDec="increment";
+               else
+               IncDec="decrement";
+               
+               System.out.println("How many times do you wish to " + IncDec + " the "  + unit + "?");//unit is set in the switch statement
+               n = scan.nextInt ();//n is how many times they want to increment or decrement the unit of time
+               
+                  if(q==1)
+                  {
+                     if(m==1)
+                     for(int i = 0; i < n; i++)
+                     test.IncrementHour();
+                     if(m==2)
+                     for(int i = 0; i < n; i++)
+                     test.IncrementMinute();
+                     if(m==3)
+                     for(int i = 0; i < n; i++)
+                     test.IncrementSecond();
+                  }
+                  if(q==2)
+                  {
+                     if(m==1)
+                     for(int i = 0; i < n; i++)
+                     test.DecrementHour();
+                     if(m==2)
+                     for(int i = 0; i < n; i++)
+                     test.DecrementMinute();
+                     if(m==3)
+                     for(int i = 0; i < n; i++)
+                     test.DecrementSecond();
+                  }
+
+               }//end of while(a) loop
+            }//end of else statement  
+           }/*end of try*/catch(InputMismatchException e)
+                          {System.out.println("Non numerical data entered. Please restart program.");}
+         }//end of main
+}//end of TimeDriver
