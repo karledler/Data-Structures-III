@@ -1,0 +1,86 @@
+// ConnectedComponents.java            
+// Examples of uses of the Graph ADT.
+//----------------------------------------------------------------------------
+
+package ch09.graphs;
+import ch05.queues.*;
+import java.util.Random;
+
+public class ConnectedComponents
+{
+  private static int ComponentCount(UnweightedGraphADT<String> graph)
+  {
+  UnboundedQueueInterface<String> queue1 = new LinkedUnbndQueue<String>();
+  UnboundedQueueInterface<String> handleQ = new LinkedUnbndQueue<String>();
+  int count = 0;
+  String vertex1, vertex2;
+  
+  graph.clearMarks();
+
+  while(graph.getUnmarked()!=null)
+  {
+  count++;
+  handleQ.enqueue(graph.getUnmarked());
+   while(!handleQ.isEmpty())
+   {
+   vertex1 = handleQ.dequeue();
+   graph.markVertex(vertex1);
+   queue1 = graph.getToVertices(vertex1);
+      while(!queue1.isEmpty())
+      {
+      vertex2 = queue1.dequeue();
+        if(!graph.isMarked(vertex2))
+         {
+         handleQ.enqueue(vertex2);
+         }
+      }
+   }
+  }
+  
+  return count;
+  }
+  
+  
+  public static void main(String[] args) 
+  {
+  double sum = 0;
+  double average = 0;
+  
+  for(int k = 0; k<5; k++)
+  {
+   UnweightedGraphADT<String> graph = new UnweightedGraph<String>(26);
+   
+   final int NUMLETTERS = 26;
+   final int NUMEDGES = 10;
+   
+   Random r = new Random();
+   
+   for(int i = 0; i < NUMLETTERS; i++)
+   {
+   String vertex = Character.toString((char)(i + 'A'));
+   graph.addVertex(vertex);
+   }
+      
+   int i=0;
+   char vertex1;
+   char vertex2;
+   while(i < NUMEDGES)
+   {
+      vertex1=(char)(r.nextInt(NUMLETTERS)+ 'A');
+      vertex2=(char)(r.nextInt(NUMLETTERS)+ 'A');
+      String v1 = Character.toString(vertex1);
+      String v2 = Character.toString(vertex2);
+      if(graph.hasEdge(v1,v2)==false)
+      {
+      graph.addEdge(v1,v2);
+      i++;
+      }
+
+   }
+   
+   sum = (sum + ComponentCount(graph));
+   }//for
+   
+   System.out.println(sum/5);
+  } //end main
+} 
