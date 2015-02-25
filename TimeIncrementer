@@ -1,0 +1,288 @@
+/*TimeIncrementer.java
+Author: Karl Edler
+9/30/14
+The TimeIncrementer class is a comprehensive counter library that utilizes a time based format. The counter displays in both 
+standard and military time. Increments can be made at any interval and to any logical 
+boundary (hour, minute, or second). 
+*/
+
+import java.text.DecimalFormat;//used to display string of time using the ones and tens place
+
+public class TimeIncrementer
+{
+   private int hour, minute, second;//integers to store hour, minute, and second of the time
+   private boolean am;//boolean keeps track of whether is AM or PM 
+   
+   public TimeIncrementer(int hour, int minute, int second, boolean am)//the constructor for standard time
+   {
+   this.am = am;
+   this.hour = hour;
+   this.minute = minute;
+   this.second = second;
+   }
+   
+   public TimeIncrementer(int hour, int minute, int second)//the constructor for military time. boolean am doesnt get set
+   {
+   this.hour = hour;
+   this.minute = minute;
+   this.second = second;
+   }
+   
+   
+   public void IncrementHour()//increments the hour by one
+   {
+      hour++;
+      if(hour==24)
+      {hour=0;}
+      
+      if(hour<12)
+      {setAM(true);}//keeps track of when it should be AM or PM
+      else
+      {setAM(false);}
+   }
+   
+   public void IncrementMinute()//increments the minute by one
+   {
+      minute++;
+      if(minute==60)
+      {minute=0;
+      IncrementHour();
+      }
+   }
+   
+   public void IncrementSecond()//increments the second by one
+   {
+      second++;
+      if(second==60)
+      {second=0;
+      IncrementMinute();
+      }
+   }
+   
+   public void DecrementHour()//decrements the hour by one
+   {
+      hour--;
+      if(hour==-1)
+      {hour=23;}
+         
+      if(hour<12)
+      {setAM(true);}//keeps track of when it should be AM or PM
+      else
+      {setAM(false);}
+   }
+   
+   public void DecrementMinute()//decrements the minute by one
+   {
+      minute--;
+      if(minute==-1)
+      {minute=59;
+      DecrementHour();
+      }
+   }
+   
+   public void DecrementSecond()//decrements the second by one 
+   {
+      second--;
+      if(second==-1)
+      {second=59;
+      DecrementMinute();
+      }
+   }
+   
+   public boolean CheckHour_Military(int hour)//checks input to make sure the hour is being set from 0 to 23 for military and returns a boolean
+   {
+      this.hour=hour;
+      if(hour<0||hour>23)//returns false if its outside the range 0 to 23
+      return false;
+      else
+      return true;
+   }
+   
+   public boolean CheckHour_Standard(int hour)//checks input to make sure the hour is being set from 1 to 12 for standard
+   {
+      this.hour=hour;
+      if(hour>12||hour<1)
+      return false;//returns false if its outside the range 1 to 12
+      else
+      return true;
+   }
+   
+   public boolean CheckMin(int minute)//checks input to make sure the minute is being set from 0 to 59 and returns a boolean
+   {
+      this.minute=minute;
+      if(minute>59||minute<0)
+      return false;//returns false if its outside the range 0 to 59
+      else
+      return true;
+   }
+   
+   public boolean CheckSec(int second)//checks input to make sure the second is being set from 0 to 59 and returns a boolean
+   {
+      this.second=second;
+      if(second>59||second<0)
+      return false;//returns false if its outside the range 0 to 59
+      else
+      return true;
+   }
+   
+   public void Convert_Hour_To_Military(int hour)//converts the standard hour to military hour
+   {
+         if(am==true)
+         {hour=hour%12;}
+         else
+         {hour=hour+12;
+            if(hour==24)
+            {hour=hour-12;}
+         }
+         this.hour=hour;
+   }
+   
+   public int getHour()//returns the hour
+   {
+   return hour;
+   }
+   
+   public boolean setHour_Military(int hour)//sets the hour using CheckHour_Military and also uses setAM. Returns a boolean
+   {
+      if(CheckHour_Military(hour)==true)
+      {
+      this.hour=hour;
+      
+      if(hour<12)
+      {setAM(true);}//keeps track of the am boolean while in military time
+      else
+      {setAM(false);}
+         
+      return true;//return true if CheckHour_Military returns true
+      }
+      else
+      {
+      return false;//return false if CheckHour_Military returns false
+      }
+
+   }
+   
+   public boolean setHour_Standard(int hour)//sets the hour using CheckHour_Standard and returns a boolean
+   {
+      if(CheckHour_Standard(hour)==true)
+      {
+      Convert_Hour_To_Military(hour);//uses Convert_Hour_To_Military to set and put standard time into military
+      return true;//return true if CheckHour_Standard returns true
+      }
+      else
+      {
+      return false;//return false if CheckHour_Standard returns false
+      }
+
+   }
+   
+   public int getMinute()//returns the minute
+   {
+   return minute;
+   }
+   
+   public boolean setMinute(int minute)//sets the minute using CheckMin and returns a boolean
+   {
+      if(CheckMin(minute)==true)
+      {
+      this.minute=minute;
+      return true;//return true if CheckMin returns true
+      }
+      else
+      {
+      return false;//return false if CheckMin returns false
+      }
+      
+   }
+   
+   public int getSecond()//returns the second
+   {
+   return second;
+   }
+   
+   public boolean setSecond(int second)//sets the second using CheckSec and returns a boolean
+   {
+      if(CheckSec(second)==true)
+      {
+      this.second=second;
+      return true;//return true if CheckSec returns true
+      }
+      else
+      {
+      return false;//return false if CheckSec returns false
+      }
+   }
+   
+   public boolean getAM()//returns whether am is true or false
+   {
+   return am;
+   }
+   
+   public void setAM(boolean am)//sets am to true or false
+   {
+   this.am=am;
+   }
+   
+   public void setTime_Military(int hour, int minute, int second)
+   {
+		if(CheckHour_Military(hour)==true)
+      setHour_Military(hour);
+		if(CheckMin(hour)==true)
+      setMinute(minute);
+      if(CheckSec(hour)==true)
+      setSecond(second);
+   }
+	public void setTime_Standard(int hour, int minute, int second, boolean am)
+   {
+      if(CheckHour_Standard(hour)==true)
+      setHour_Standard(hour);
+		if(CheckMin(hour)==true)
+      setMinute(minute);
+      if(CheckSec(hour)==true)
+      setSecond(second);
+      setAM(am);
+   }
+   
+   public int[] TimeArray() //return the time in an array
+   {
+        int[] array = {hour, minute, second};
+        return array;      
+   }
+   
+   public String StandardString()//Returns a string of the time displayed in standard
+   {
+      DecimalFormat decimal = new DecimalFormat("00");//displays the time using the ones and tens place
+      
+         if(am)
+         {
+               if(hour==0)
+               {return (decimal.format(hour+12) + 
+               ":" + decimal.format(minute) + ":" + decimal.format(second) + "A.M.");}
+               if(hour==12)
+               {return (decimal.format(hour) + 
+               ":" + decimal.format(minute) + ":" + decimal.format(second) + "A.M.");}
+               else
+               {return (decimal.format(hour%12) + 
+               ":" + decimal.format(minute) + ":" + decimal.format(second) + "A.M.");}
+         }
+         else
+         {
+               if(hour==12)
+               {return (decimal.format(hour) + 
+               ":" + decimal.format(minute) + ":" + decimal.format(second) + "P.M.");}
+               {return (decimal.format(hour%12) + 
+               ":" + decimal.format(minute) + ":" + decimal.format(second) + "P.M.");}
+         }
+   }
+      
+   public String MilitaryString()//Returns a string of the time displayed in military
+   { 
+      DecimalFormat decimal = new DecimalFormat("00");//displays the time using the ones and tens place
+   
+         return (decimal.format(hour) + 
+         ":" + decimal.format(minute) + ":" + decimal.format(second) + ".");
+   }
+
+}
+
+   
