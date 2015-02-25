@@ -1,0 +1,38 @@
+//Euclid.java
+
+import java.util.Scanner;
+public class Euclid
+   {
+      private static int gcd(int m, int n)
+      {
+      int placeholder;
+         if(m<n)
+         {placeholder=m;
+         m=n;
+         n=placeholder;
+         }
+         if(m%n==0)
+         {return n;}
+         else
+         {return gcd(n,m%n);}
+      }
+      
+      public static void main(String[] args)
+      {
+      int m;
+      int n;
+      int divisor;
+      
+      Scanner scan = new Scanner (System.in);
+
+      System.out.println ("Enter positive integer #1: ");
+      m = scan.nextInt ();
+      System.out.println ("Enter positive integer #2: ");
+      n = scan.nextInt ();
+      
+      divisor = gcd(m,n);
+      
+      System.out.println("The largest common divisor for " + m + " and " + n + " is " + divisor + ".");
+      }
+      
+  }
