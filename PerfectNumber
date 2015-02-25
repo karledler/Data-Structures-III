@@ -1,0 +1,45 @@
+//PerfectNumber.java
+
+import java.util.Scanner;
+
+
+public class PerfectNumber
+   {
+      public static void main(String [] args)
+      {
+      int num = 0;
+      
+      boolean quit = true;
+      
+      Scanner scan = new Scanner (System.in);
+      
+         while(quit==true)
+         {int sum = 0;
+         System.out.println ("Enter a number (0 to quit)");
+         num = scan.nextInt ();
+         
+            if(num==0)
+            {
+            quit=false;
+            System.out.println ("End");
+            }
+            else
+            {
+               for(int i = 1; i < num; i++)
+               {
+                  if((num%i)==0)
+                  {sum=sum + i;}
+               }
+            
+             
+             if(sum==num)
+             {System.out.println (num + " is a perfect number.\n");}
+             else
+             {System.out.println (num + " is not a perfect number.\n");}
+             
+             }
+          }
+       
+       }
+    }
+         
