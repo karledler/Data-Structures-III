@@ -1,0 +1,238 @@
+// UnweightedGraphADT.java
+//
+// General precondition: Except for the addVertex and hasVertex methods, 
+// any vertex passed as an argument to a method is in this graph.
+//----------------------------------------------------------------------------
+
+package ch09.graphs;
+
+import ch05.queues.*;
+
+public interface UnweightedGraphADT<T>
+{
+  boolean isEmpty();
+  // Returns true if this graph is empty; otherwise, returns false.
+
+  boolean isFull();
+  // Returns true if this graph is full; otherwise, returns false.
+  
+  void addVertex(T vertex);
+  // Preconditions:   This graph is not full.
+  //                  Vertex is not already in this graph.
+  //                  Vertex is not null.
+  //
+  // Adds vertex to this graph.
+
+  boolean hasVertex(T vertex);
+  // Returns true if this graph contains vertex; otherwise, returns false.
+  boolean hasEdge(T fromVertex, T toVertex);
+  // Returns true if this graph contains edge; otherwise, returns false.
+    void addEdge(T fromVertex, T toVertex);
+  // Adds an edge from fromVertex to toVertex.
+  
+  UnboundedQueueInterface<T> getToVertices(T vertex);
+  // Returns a queue of the vertices that are adjacent from vertex.
+
+  void clearMarks();
+  // Sets marks for all vertices to false.
+
+  void markVertex(T vertex);
+  // Sets mark for vertex to true.
+
+  boolean isMarked(T vertex);
+  // Returns true if vertex is marked; otherwise, returns false.
+  
+  T getUnmarked();
+  // Returns an unmarked vertex if any exist; otherwise, returns null.
+  
+}
+
+// UnweightedGraph.java            
+//
+// Implements a undirected graph with unweighted edges.
+// Vertices are objects of class T and can be marked as having been visited.
+// Equivalence of vertices is determined by the vertices' equals method.
+//
+// General precondition: Except for the addVertex and hasVertex methods, 
+// any vertex passed as an argument to a method is in this graph.
+//----------------------------------------------------------------------------
+
+package ch09.graphs;
+
+import ch05.queues.*;
+
+public class UnweightedGraph<T> implements UnweightedGraphADT<T>
+{
+  public static final int NULL_EDGE = 0;
+  private static final int DEFCAP = 50;  // default capacity
+  private int numVertices;
+  private int maxVertices;
+  private T[] vertices;
+  private boolean[][] edges;
+  private boolean[] marks;  // marks[i] is mark for vertices[i]
+
+ 
+  public UnweightedGraph(int maxV)
+  // Instantiates a graph with capacity maxV.
+  {
+    numVertices = 0;
+    maxVertices = maxV;
+    vertices = (T[]) new Object[maxV];
+    marks = new boolean[maxV];
+    edges = new boolean[maxV][maxV];
+  }
+
+  public boolean isEmpty()
+  // Returns true if this graph is empty; otherwise, returns false.
+  {
+  if(vertices[0]==null)
+  return true;
+  else
+  return false;
+  }
+
+  public boolean isFull()
+  // Returns true if this graph is full; otherwise, returns false.
+  {
+  if(vertices[maxVertices]==null)
+  return false;
+  else
+  return true;
+  }
+
+  public void addVertex(T vertex)
+  // Preconditions:   This graph is not full.
+  //                  Vertex is not already in this graph.
+  //                  Vertex is not null.
+  //
+  // Adds vertex to this graph.
+  {
+    vertices[numVertices] = vertex;
+    for (int index = 0; index < numVertices; index++)
+    {
+      edges[numVertices][index] = false;
+      edges[index][numVertices] = false;
+    }
+    numVertices++;
+  }
+  
+  public boolean hasVertex(T vertex)
+  // Returns true if this graph contains vertex; otherwise, returns false.
+  {
+  
+  boolean has=false;
+  
+     for (int j = 0; j < numVertices; j++)
+     {
+     if(vertices[j]==vertex)
+     has=true;
+     }
+     
+     return has;
+  }
+  
+  public boolean hasEdge(T fromVertex, T toVertex)
+  // Returns true if this graph contains edge; otherwise, returns false.
+  {
+    int row;
+    int column;
+    boolean has = false;
+ 
+    row = indexIs(fromVertex);
+    column = indexIs(toVertex);
+    if(edges[row][column] == true || edges[column][row] == true)
+    {has = true;}
+    
+    return has;
+  }
+  
+  private int indexIs(T vertex)
+  // Returns the index of vertex in vertices.
+  {
+    int index = 0;
+    while (!vertex.equals(vertices[index]))
+      index++;
+    return index;
+  }
+
+  public void addEdge(T fromVertex, T toVertex)
+  // Adds an edge from fromVertex to toVertex.
+  {
+    int row;
+    int column;
+ 
+    row = indexIs(fromVertex);
+    column = indexIs(toVertex);
+    edges[row][column] = true;
+    edges[column][row] = true;
+  }
+
+  public UnboundedQueueInterface<T> getToVertices(T vertex)
+  // Returns a queue of the vertices that are adjacent from vertex.
+  {
+    UnboundedQueueInterface<T> adjVertices = new LinkedUnbndQueue<T>();
+    int fromIndex;
+   int toIndex;
+    fromIndex = indexIs(vertex);
+    for (toIndex = 0; toIndex < numVertices; toIndex++)
+      if (edges[fromIndex][toIndex] == true || edges[toIndex][fromIndex] == true)
+        adjVertices.enqueue(vertices[toIndex]);
+    return adjVertices;
+  }
+
+  public void clearMarks()
+  // Sets marks for all vertices to false.
+  {
+     for (int j = 0; j < numVertices; j++)
+     {
+     marks[j]=false;
+     }
+
+  }
+
+  public void markVertex(T vertex)
+  // Sets mark for vertex to true.
+  {
+     for (int j = 0; j < numVertices; j++)
+     {
+     if(vertices[j]==vertex)
+     marks[j]=true;
+     }
+  }
+
+  public boolean isMarked(T vertex)
+  // Returns true if vertex is marked; otherwise, returns false.
+  {
+  boolean mark=false;
+  
+     for (int j = 0; j < numVertices; j++)
+     {
+     if(vertices[j]==vertex)
+     mark = marks[j];
+     }
+     
+     return mark;
+  }
+  
+  public T getUnmarked()
+  // Returns an unmarked vertex if any exist; otherwise, returns null.
+  {
+  
+  T unmarked=null;
+  
+     for (int j = 0; j < numVertices; j++)
+     {
+        if(marks[j]==false)
+        {
+        unmarked = vertices[j];
+        break;
+        }
+        else
+        {
+       unmarked=null;
+        }
+     }
+     
+     return unmarked;
+  }
+}
